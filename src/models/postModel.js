@@ -1,6 +1,6 @@
 import conectarAoBanco from '../config/dbConfig.js';
 import { ObjectId } from "mongodb";
-const conexao = await conectarAoBanco(process.env.STRING_CONEXAO);
+const conexao = await conectarAoBanco(process.env.STRING_CONEXAO); // await porque é uma função assíncrona, espera primerio conectar ao banco
 
 export const getPosts = async () => {
   const db = conexao.db("instavale");
@@ -20,3 +20,22 @@ export const updateImgUrl = async (id, imgUrl) => {
     const objectId = ObjectId.createFromHexString(id);
     return colecao.updateOne({_id: objectId}, {$set: { imgUrl: imgUrl }});
 }
+export const updatePost = async (id, dadosAtualizados) => {
+    const db = conexao.db("instavale");
+    const colecao = db.collection("posts");
+    const objectId = ObjectId.createFromHexString(id);
+
+    return colecao.updateOne(
+        { _id: objectId },
+        { $set: dadosAtualizados }
+    );
+}
+
+export const deletePost = async (id) => {
+    const db = conexao.db("instavale");
+    const colecao = db.collection("posts");
+    const objectId = ObjectId.createFromHexString(id);
+
+    return colecao.deleteOne({ _id: objectId });
+}
+
